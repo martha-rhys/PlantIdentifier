@@ -107,7 +107,7 @@
   }
   
   .camera-viewfinder {
-    background: radial-gradient(circle at 50% 40%, transparent 35%, rgba(0,0,0,0.7) 36%);
+    background: radial-gradient(circle at 50% 50%, transparent 35%, rgba(0,0,0,0.7) 36%);
   }
 }
 
