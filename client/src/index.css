@@ -25,10 +25,10 @@
   --radius: 0.5rem;
   
   /* Custom plant app colors */
-  --forest-green: hsl(113, 57%, 33%);
+  --forest-green: hsl(113, 40%, 65%);
   --light-pastel-green: hsl(120, 25%, 95%);
   --white-pastel: hsl(0, 0%, 96%);
-  --dark-green: hsl(113, 65%, 20%);
+  --dark-green: hsl(113, 45%, 45%);
 }
 
 .dark {
