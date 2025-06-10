@@ -51,11 +51,24 @@ export default function CameraScreen() {
 
     if (!context) return;
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0);
+    // Compress image by reducing dimensions while maintaining aspect ratio
+    const maxWidth = 800;
+    const maxHeight = 600;
+    
+    let { videoWidth, videoHeight } = video;
+    
+    if (videoWidth > maxWidth || videoHeight > maxHeight) {
+      const ratio = Math.min(maxWidth / videoWidth, maxHeight / videoHeight);
+      videoWidth *= ratio;
+      videoHeight *= ratio;
+    }
 
-    const imageData = canvas.toDataURL("image/jpeg", 0.8);
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
+    context.drawImage(video, 0, 0, videoWidth, videoHeight);
+
+    // Use lower quality to reduce file size
+    const imageData = canvas.toDataURL("image/jpeg", 0.5);
     identifyPlantMutation.mutate(imageData);
   };
 
