@@ -101,11 +101,23 @@ export default function PlantDetails() {
 
       {/* Plant Photo */}
       <div className="px-4 mb-6">
-        <img
-          src={plant.imageUrl}
-          alt={plant.commonName}
-          className="w-full h-64 object-cover rounded-xl shadow-lg"
-        />
+        {plant.imageUrl ? (
+          <img
+            src={plant.imageUrl}
+            alt={plant.commonName}
+            className="w-full h-64 object-cover rounded-xl shadow-lg"
+            onError={(e) => {
+              console.error("Failed to load plant image:", plant.imageUrl?.substring(0, 100) + "...");
+            }}
+            onLoad={() => {
+              console.log("Plant image loaded successfully");
+            }}
+          />
+        ) : (
+          <div className="w-full h-64 bg-gray-200 rounded-xl shadow-lg flex items-center justify-center text-gray-500">
+            <span>No photo available</span>
+          </div>
+        )}
       </div>
 
       {/* AI Analysis Results */}
