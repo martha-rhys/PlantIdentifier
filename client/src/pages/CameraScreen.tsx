@@ -20,6 +20,7 @@ export default function CameraScreen() {
 
   const identifyPlantMutation = useMutation({
     mutationFn: async (imageData: string) => {
+      console.log("Attempting to identify plant with image data length:", imageData.length);
       const response = await apiRequest("POST", "/api/plants/identify", {
         imageData,
         aromaLevel: aromaLevel[0],
@@ -27,13 +28,15 @@ export default function CameraScreen() {
       return response.json();
     },
     onSuccess: (plant) => {
+      console.log("Plant identified successfully:", plant);
       queryClient.invalidateQueries({ queryKey: ["/api/plants"] });
       setLocation(`/plant/${plant.id}`);
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Plant identification error:", error);
       toast({
         title: "Error",
-        description: "Failed to identify plant. Please try again.",
+        description: `Failed to identify plant: ${error.message}`,
         variant: "destructive",
       });
     },

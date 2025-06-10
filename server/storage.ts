@@ -68,8 +68,19 @@ export class MemStorage implements IStorage {
 
     const id = this.currentPlantId++;
     const plant: Plant = { 
-      ...insertPlant, 
       id,
+      scientificName: insertPlant.scientificName,
+      commonName: insertPlant.commonName,
+      family: insertPlant.family,
+      origin: insertPlant.origin,
+      careLevel: insertPlant.careLevel,
+      lightRequirements: insertPlant.lightRequirements,
+      watering: insertPlant.watering,
+      specialFeatures: insertPlant.specialFeatures,
+      confidence: insertPlant.confidence,
+      imageUrl: insertPlant.imageUrl,
+      aromaLevel: insertPlant.aromaLevel ?? 5,
+      identificationCount: insertPlant.identificationCount ?? 1,
       createdAt: new Date()
     };
     this.plants.set(id, plant);
