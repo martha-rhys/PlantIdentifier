@@ -131,9 +131,9 @@ export default function PlantLibrary() {
   }
 
   return (
-    <div className="bg-forest-green flex flex-col min-h-screen min-h-[100dvh]">
+    <div className="bg-forest-green flex flex-col h-screen max-h-[100dvh]">
       {/* Header */}
-      <div className="flex justify-between items-center p-4 pt-12">
+      <div className="flex justify-between items-center p-4 pt-12 flex-shrink-0">
         <h1 className="text-white-pastel text-2xl font-light">All Plants</h1>
         <Button
           variant="ghost"
@@ -151,7 +151,7 @@ export default function PlantLibrary() {
       </div>
 
       {/* Plant List Container */}
-      <div className="flex-1 overflow-y-auto px-4 space-y-3 pb-24">
+      <div className="flex-1 overflow-y-auto px-4 space-y-3 pb-4">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-white-pastel" />
@@ -221,7 +221,7 @@ export default function PlantLibrary() {
       </div>
 
       {/* Bottom Button */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-forest-green to-transparent">
+      <div className="p-4 flex-shrink-0 bg-gradient-to-t from-forest-green to-transparent">
         <Button
           onClick={() => setLocation("/camera")}
           className="w-full py-4 text-lg font-semibold shadow-lg"

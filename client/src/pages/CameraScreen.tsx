@@ -73,7 +73,7 @@ export default function CameraScreen() {
   };
 
   return (
-    <div className="bg-forest-green flex flex-col min-h-screen min-h-[100dvh]">
+    <div className="bg-forest-green flex flex-col h-screen max-h-[100dvh]">
       {/* Header */}
       <div className="flex justify-between items-center p-4 pt-12 relative z-10">
         <Button

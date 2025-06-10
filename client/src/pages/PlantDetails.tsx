@@ -51,7 +51,7 @@ export default function PlantDetails() {
   }
 
   return (
-    <div className="bg-light-pastel-green flex flex-col min-h-screen min-h-[100dvh]">
+    <div className="bg-light-pastel-green flex flex-col h-screen max-h-[100dvh]">
       {/* Header */}
       <div className="flex justify-between items-center p-4 pt-12">
         {fromCamera ? (
