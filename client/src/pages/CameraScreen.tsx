@@ -30,7 +30,7 @@ export default function CameraScreen() {
     onSuccess: (plant) => {
       console.log("Plant identified successfully:", plant);
       queryClient.invalidateQueries({ queryKey: ["/api/plants"] });
-      setLocation(`/plant/${plant.id}`);
+      setLocation(`/plant/${plant.id}?from=camera`);
     },
     onError: (error) => {
       console.error("Plant identification error:", error);

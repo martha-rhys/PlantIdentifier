@@ -16,7 +16,7 @@ export default function LoadingScreen() {
     <div className="bg-forest-green flex flex-col items-center justify-center px-6 min-h-screen min-h-[100dvh]">
       <div className="flex-1 flex items-center justify-center">
         <img
-          src="https://www.rawpixel.com/image/3853885/illustration-png-sticker-green"
+          src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Lisc_lipy.jpg"
           alt="Split-leaf Philodendron"
           className="w-64 h-64 object-cover rounded-full shadow-2xl border-4 border-white"
           style={{ borderColor: 'var(--white-pastel)' }}

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, useParams } from "wouter";
+import { useLocation, useParams, useSearch } from "wouter";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -8,6 +8,10 @@ import type { Plant } from "@shared/schema";
 export default function PlantDetails() {
   const [, setLocation] = useLocation();
   const { id } = useParams();
+  const searchParams = useSearch();
+  
+  // Check if user came from camera (after taking photo) or from library
+  const fromCamera = searchParams.includes('from=camera');
 
   const {
     data: plantData,
@@ -52,14 +56,18 @@ export default function PlantDetails() {
     <div className="bg-light-pastel-green flex flex-col min-h-screen min-h-[100dvh]">
       {/* Header */}
       <div className="flex justify-between items-center p-4 pt-12">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setLocation("/camera")}
-          className="text-dark-green hover:bg-white"
-        >
-          <ArrowLeft className="h-6 w-6" />
-        </Button>
+        {fromCamera ? (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setLocation("/camera")}
+            className="text-dark-green hover:bg-white"
+          >
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+        ) : (
+          <div className="w-10"></div>
+        )}
         <h1 className="text-dark-green text-lg font-medium">Plant Details</h1>
         <Button
           onClick={handleOk}
