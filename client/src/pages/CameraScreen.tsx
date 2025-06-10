@@ -51,9 +51,9 @@ export default function CameraScreen() {
 
     if (!context) return;
 
-    // Compress image by reducing dimensions while maintaining aspect ratio
-    const maxWidth = 800;
-    const maxHeight = 600;
+    // Use higher resolution while maintaining reasonable file size
+    const maxWidth = 1200;
+    const maxHeight = 1200;
     
     let { videoWidth, videoHeight } = video;
     
@@ -67,8 +67,8 @@ export default function CameraScreen() {
     canvas.height = videoHeight;
     context.drawImage(video, 0, 0, videoWidth, videoHeight);
 
-    // Use lower quality to reduce file size
-    const imageData = canvas.toDataURL("image/jpeg", 0.5);
+    // Use higher quality compression for better detail
+    const imageData = canvas.toDataURL("image/jpeg", 0.8);
     identifyPlantMutation.mutate(imageData);
   };
 
