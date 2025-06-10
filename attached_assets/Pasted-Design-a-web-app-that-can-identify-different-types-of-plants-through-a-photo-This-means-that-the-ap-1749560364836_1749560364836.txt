@@ -1,0 +1,23 @@
+Design a web app that can identify different types of plants through a photo. This means that the app contains a camera. The app will have 4 type of screens. The app dimensions should fit an iPhone.
+
+1 - The first page is a loading screen, include a forest green colour for the background, and a photos of a split-leaf Philodendron in the middle of the page. At the bottom of the page add a “welcome” text in a white pastel colour. When everything is fully loaded, can move on to the second page. 
+
+2 -  On the second page add
+Forest green colour background
+“All Plants” on top of the page in a white pastel colour
+All text on the page to be a white  pastel colour
+An area to include the different types of plants, for instance including a photo and the left side and the name of the plant on the right side in a box across the page. When provided a new plant, underneath the previous box, add another box with the same layout as the previous and  include the photo and name of the plant that has just been provided. Allow this process to be repeated every time there is a new plant to be added.
+When clicking on a specific plant, move to page 4 to receive information about the plant that has just been clicked.
+On page 2, allow the movement of scrolling up and down when there are many different types of plants, allowing to see and access every plant.
+On the bottom right of each box, include a small box that include how many times the camera has taken a photo of that specific plant 
+On the bottom of the page, include a button, allowing to move to page 3
+On the bottom right of the photo Add a delete icon to add an option to delete all the different types of plants that are on page 2.
+
+3 -  On the third page, include the camera, and a button at the bottom of the page to allow a photo to be taken. After the photo has been taken, allow the photo to be analysed by another AI to receive information about the plant that’s in the photo.
+    Include an aroma scale, from 0 to 10, that the user can move up and down on the scale to include extra information. Place at the bottom right corner of the page.
+     Add a cancel button on the top left to go back to page 2.
+
+4 - On the fourth page, include the photo that have been taken in the middle of the page. Below the photo include the information provided by the AI
+  -At the top left of the page add a back button to go back to page 3.
+  -At the top right of the page, add a confirm button to save the information page on page 2. Also to go back to page 2.
+  - Have the background colour to be light pastel green
