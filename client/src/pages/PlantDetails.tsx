@@ -14,13 +14,15 @@ export default function PlantDetails() {
   const queryClient = useQueryClient();
 
   const {
-    data: plant,
+    data: plantData,
     isLoading,
     error,
   } = useQuery<Plant>({
     queryKey: ["/api/plants", id],
     enabled: !!id,
   });
+
+  const plant = Array.isArray(plantData) ? plantData[0] : plantData;
 
   const updateCountMutation = useMutation({
     mutationFn: async () => {
