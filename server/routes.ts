@@ -48,7 +48,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const plantData = {
         ...identifiedPlant,
         imageUrl: imageData,
-        aromaLevel: aromaLevel || 5,
+        aromaLevel: aromaLevel !== undefined ? aromaLevel : 5,
         identificationCount: 1,
       };
 
