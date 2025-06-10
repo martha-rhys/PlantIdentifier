@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertPlantSchema } from "@shared/schema";
 import { z } from "zod";
+import { identifyPlantWithAI } from "./openai";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get all plants
@@ -40,45 +41,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Image data required" });
       }
 
-      // Mock AI plant identification
-      const mockPlants = [
-        {
-          scientificName: "Monstera deliciosa",
-          commonName: "Swiss Cheese Plant",
-          family: "Araceae",
-          origin: "Central America, Southern Mexico",
-          careLevel: "Easy to Moderate",
-          lightRequirements: "Bright, indirect light",
-          watering: "Water when top inch of soil is dry. Approximately once per week.",
-          specialFeatures: "Known for its distinctive split leaves (fenestration) that develop as the plant matures. Can grow very large indoors with proper support.",
-          confidence: 92,
-        },
-        {
-          scientificName: "Sansevieria trifasciata",
-          commonName: "Snake Plant",
-          family: "Asparagaceae",
-          origin: "West Africa",
-          careLevel: "Very Easy",
-          lightRequirements: "Low to bright, indirect light",
-          watering: "Water every 2-3 weeks. Allow soil to dry completely between waterings.",
-          specialFeatures: "Extremely drought tolerant and air purifying. Can survive in low light conditions.",
-          confidence: 89,
-        },
-        {
-          scientificName: "Ficus lyrata",
-          commonName: "Fiddle Leaf Fig",
-          family: "Moraceae",
-          origin: "Western Africa",
-          careLevel: "Moderate to Difficult",
-          lightRequirements: "Bright, indirect light",
-          watering: "Water when top 1-2 inches of soil are dry.",
-          specialFeatures: "Large, violin-shaped leaves. Requires consistent care and doesn't like to be moved.",
-          confidence: 85,
-        }
-      ];
-
-      // Randomly select a plant for mock identification
-      const identifiedPlant = mockPlants[Math.floor(Math.random() * mockPlants.length)];
+      // Use OpenAI to identify the plant
+      console.log("Identifying plant with OpenAI API...");
+      const identifiedPlant = await identifyPlantWithAI(imageData);
       
       const plantData = {
         ...identifiedPlant,
@@ -90,7 +55,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const plant = await storage.createPlant(plantData);
       res.json(plant);
     } catch (error) {
-      res.status(500).json({ message: "Failed to identify plant" });
+      console.error("Plant identification error:", error);
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Failed to identify plant" 
+      });
     }
   });
 
