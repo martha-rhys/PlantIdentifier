@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { Plant } from "@shared/schema";
+import { useState, useRef } from "react";
 
 export default function PlantLibrary() {
   const [, setLocation] = useLocation();
@@ -40,6 +41,27 @@ export default function PlantLibrary() {
     },
   });
 
+  const deletePlantMutation = useMutation({
+    mutationFn: async (plantId: number) => {
+      const response = await apiRequest("DELETE", `/api/plants/${plantId}`);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/plants"] });
+      toast({
+        title: "Success",
+        description: "Plant deleted successfully",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete plant",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleDeleteAll = () => {
     if (window.confirm("Delete all identified plants?")) {
       deleteAllMutation.mutate();
@@ -48,6 +70,52 @@ export default function PlantLibrary() {
 
   const handlePlantClick = (plantId: number) => {
     setLocation(`/plant/${plantId}`);
+  };
+
+  const handleDeletePlant = (plantId: number, plantName: string) => {
+    if (window.confirm(`Delete ${plantName}?`)) {
+      deletePlantMutation.mutate(plantId);
+    }
+  };
+
+  // Swipe handling
+  const [swipeStates, setSwipeStates] = useState<Record<number, { startX: number; currentX: number; isDeleting: boolean }>>({});
+
+  const handleTouchStart = (e: React.TouchEvent, plantId: number) => {
+    const touch = e.touches[0];
+    setSwipeStates(prev => ({
+      ...prev,
+      [plantId]: { startX: touch.clientX, currentX: 0, isDeleting: false }
+    }));
+  };
+
+  const handleTouchMove = (e: React.TouchEvent, plantId: number) => {
+    const touch = e.touches[0];
+    const state = swipeStates[plantId];
+    if (!state) return;
+
+    const currentX = touch.clientX - state.startX;
+    setSwipeStates(prev => ({
+      ...prev,
+      [plantId]: { ...state, currentX }
+    }));
+  };
+
+  const handleTouchEnd = (plantId: number, plantName: string) => {
+    const state = swipeStates[plantId];
+    if (!state) return;
+
+    // If swiped left more than 100px, delete the plant
+    if (state.currentX < -100) {
+      handleDeletePlant(plantId, plantName);
+    }
+
+    // Reset swipe state
+    setSwipeStates(prev => {
+      const newState = { ...prev };
+      delete newState[plantId];
+      return newState;
+    });
   };
 
   if (error) {
@@ -96,30 +164,53 @@ export default function PlantLibrary() {
             </p>
           </div>
         ) : (
-          plants.map((plant) => (
-            <div
-              key={plant.id}
-              onClick={() => handlePlantClick(plant.id)}
-              className="bg-dark-green rounded-xl p-4 flex items-center space-x-4 cursor-pointer hover:bg-opacity-80 transition-all"
-            >
-              <img
-                src={plant.imageUrl}
-                alt={plant.commonName}
-                className="w-16 h-16 object-cover rounded-lg"
-              />
-              <div className="flex-1">
-                <h3 className="text-white-pastel font-medium">
-                  {plant.scientificName}
-                </h3>
-                <p className="text-white-pastel opacity-70 text-sm">
-                  {plant.commonName}
-                </p>
+          plants.map((plant) => {
+            const swipeState = swipeStates[plant.id] || { currentX: 0 };
+            const translateX = Math.min(0, swipeState.currentX);
+            const showDeleteIcon = swipeState.currentX < -50;
+            
+            return (
+              <div
+                key={plant.id}
+                className="relative overflow-hidden rounded-xl"
+              >
+                {/* Delete background */}
+                <div className="absolute inset-0 bg-red-500 flex items-center justify-end px-6">
+                  <Trash2 className="h-6 w-6 text-white" />
+                </div>
+                
+                {/* Plant item */}
+                <div
+                  onClick={() => !swipeState.currentX && handlePlantClick(plant.id)}
+                  onTouchStart={(e) => handleTouchStart(e, plant.id)}
+                  onTouchMove={(e) => handleTouchMove(e, plant.id)}
+                  onTouchEnd={() => handleTouchEnd(plant.id, plant.commonName)}
+                  className="bg-dark-green rounded-xl p-4 flex items-center space-x-4 cursor-pointer hover:bg-opacity-80 transition-all relative"
+                  style={{
+                    transform: `translateX(${translateX}px)`,
+                    transition: swipeState.currentX === 0 ? 'transform 0.3s ease-out' : 'none'
+                  }}
+                >
+                  <img
+                    src={plant.imageUrl}
+                    alt={plant.commonName}
+                    className="w-16 h-16 object-cover rounded-lg"
+                  />
+                  <div className="flex-1">
+                    <h3 className="text-white-pastel font-medium">
+                      {plant.scientificName}
+                    </h3>
+                    <p className="text-white-pastel opacity-70 text-sm">
+                      {plant.commonName}
+                    </p>
+                  </div>
+                  <div className="text-white-pastel text-sm bg-forest-green px-2 py-1 rounded-md">
+                    {plant.identificationCount}x
+                  </div>
+                </div>
               </div>
-              <div className="text-white-pastel text-sm bg-forest-green px-2 py-1 rounded-md">
-                {plant.identificationCount}x
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
 
