@@ -18,17 +18,17 @@ export interface PlantIdentificationResult {
 export async function identifyPlantWithAI(imageData: string): Promise<PlantIdentificationResult> {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4.1",
       messages: [
         {
           role: "system",
-          content: `You are a professional botanist and plant identification expert. Analyze the plant in the image and provide detailed information in JSON format. If you cannot identify the plant with reasonable confidence, still provide your best guess but lower the confidence score accordingly.
+          content: `You are a professional botanist, tree and plant identification expert. Analyze the leaf in the image and provide detailed information in JSON format. If you cannot identify the plant with reasonable confidence, still provide your best guess but lower the confidence score accordingly.
 
 Response format:
 {
-  "scientificName": "Scientific name of the plant",
-  "commonName": "Common name of the plant",
-  "family": "Plant family",
+  "scientificName": "Scientific name of the tree or plant",
+  "commonName": "Common name of the tree or plant",
+  "family": "tree or Plant family",
   "origin": "Geographic origin",
   "careLevel": "Easy/Moderate/Difficult",
   "lightRequirements": "Light requirements description",
@@ -42,7 +42,7 @@ Response format:
           content: [
             {
               type: "text",
-              text: "Please identify this plant and provide detailed care information."
+              text: "Please identify this tree or plant and provide details about it."
             },
             {
               type: "image_url",
