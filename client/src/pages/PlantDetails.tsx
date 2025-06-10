@@ -58,6 +58,8 @@ export default function PlantDetails() {
   }
 
   if (error || !plant) {
+    console.error("Plant details error:", error);
+    console.log("Plant ID:", id);
     return (
       <div className="bg-light-pastel-green min-h-screen min-h-[100dvh] flex items-center justify-center px-4">
         <div className="text-dark-green text-center">
@@ -72,6 +74,9 @@ export default function PlantDetails() {
       </div>
     );
   }
+
+  console.log("Plant data in details:", plant);
+  console.log("Plant imageUrl:", plant.imageUrl ? plant.imageUrl.substring(0, 50) + "..." : "undefined");
 
   return (
     <div className="bg-light-pastel-green flex flex-col min-h-screen min-h-[100dvh]">
@@ -101,23 +106,18 @@ export default function PlantDetails() {
 
       {/* Plant Photo */}
       <div className="px-4 mb-6">
-        {plant.imageUrl ? (
-          <img
-            src={plant.imageUrl}
-            alt={plant.commonName}
-            className="w-full h-64 object-cover rounded-xl shadow-lg"
-            onError={(e) => {
-              console.error("Failed to load plant image:", plant.imageUrl?.substring(0, 100) + "...");
-            }}
-            onLoad={() => {
-              console.log("Plant image loaded successfully");
-            }}
-          />
-        ) : (
-          <div className="w-full h-64 bg-gray-200 rounded-xl shadow-lg flex items-center justify-center text-gray-500">
-            <span>No photo available</span>
-          </div>
-        )}
+        <img
+          src={plant.imageUrl}
+          alt={plant.commonName}
+          className="w-full h-64 object-cover rounded-xl shadow-lg"
+          onError={(e) => {
+            console.error("Failed to load plant image:", plant.imageUrl?.substring(0, 100) + "...");
+            console.error("Full imageUrl:", plant.imageUrl);
+          }}
+          onLoad={() => {
+            console.log("Plant image loaded successfully");
+          }}
+        />
       </div>
 
       {/* AI Analysis Results */}
