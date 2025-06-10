@@ -133,6 +133,23 @@ export default function CameraScreen() {
             </div>
           </>
         )}
+
+        {/* Loading Overlay */}
+        {identifyPlantMutation.isPending && (
+          <div className="absolute inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl p-8 flex flex-col items-center space-y-4">
+              <Loader2 className="h-12 w-12 animate-spin text-forest-green" />
+              <div className="text-center">
+                <h3 className="text-forest-green text-lg font-semibold mb-2">
+                  Identifying Plant...
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  Please wait while we analyze your photo
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Aroma Scale */}
