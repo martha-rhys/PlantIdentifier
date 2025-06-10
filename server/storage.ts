@@ -73,7 +73,6 @@ export class MemStorage implements IStorage {
       commonName: insertPlant.commonName,
       family: insertPlant.family,
       origin: insertPlant.origin,
-      careLevel: insertPlant.careLevel,
       lightRequirements: insertPlant.lightRequirements,
       watering: insertPlant.watering,
       specialFeatures: insertPlant.specialFeatures,

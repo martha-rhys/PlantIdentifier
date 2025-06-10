@@ -8,7 +8,6 @@ export interface PlantIdentificationResult {
   commonName: string;
   family: string;
   origin: string;
-  careLevel: string;
   lightRequirements: string;
   watering: string;
   specialFeatures: string;
@@ -18,7 +17,7 @@ export interface PlantIdentificationResult {
 export async function identifyPlantWithAI(imageData: string): Promise<PlantIdentificationResult> {
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4.1",
+      model: "gpt-4o",
       messages: [
         {
           role: "system",
@@ -30,7 +29,6 @@ Response format:
   "commonName": "Common name of the tree or plant",
   "family": "tree or Plant family",
   "origin": "Geographic origin",
-  "careLevel": "Easy/Moderate/Difficult",
   "lightRequirements": "Light requirements description",
   "watering": "Watering instructions",
   "specialFeatures": "Notable characteristics or care tips",
@@ -65,7 +63,6 @@ Response format:
       commonName: result.commonName || "Unknown plant",
       family: result.family || "Unknown family",
       origin: result.origin || "Unknown origin",
-      careLevel: result.careLevel || "Moderate",
       lightRequirements: result.lightRequirements || "Bright, indirect light",
       watering: result.watering || "Water when soil is dry",
       specialFeatures: result.specialFeatures || "No special features noted",

@@ -107,10 +107,7 @@ export default function PlantDetails() {
               <p className="text-gray-700">{plant.origin}</p>
             </div>
 
-            <div>
-              <h3 className="text-dark-green font-semibold mb-1">Care Level</h3>
-              <p className="text-gray-700">{plant.careLevel}</p>
-            </div>
+
 
             <div>
               <h3 className="text-dark-green font-semibold mb-1">

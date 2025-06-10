@@ -8,7 +8,6 @@ export const plants = pgTable("plants", {
   commonName: text("common_name").notNull(),
   family: text("family").notNull(),
   origin: text("origin").notNull(),
-  careLevel: text("care_level").notNull(),
   lightRequirements: text("light_requirements").notNull(),
   watering: text("watering").notNull(),
   specialFeatures: text("special_features").notNull(),
