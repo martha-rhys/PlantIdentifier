@@ -14,15 +14,13 @@ export default function PlantDetails() {
   const fromCamera = searchParams.includes('from=camera');
 
   const {
-    data: plantData,
+    data: plant,
     isLoading,
     error,
   } = useQuery<Plant>({
-    queryKey: ["/api/plants", id],
+    queryKey: [`/api/plants/${id}`],
     enabled: !!id,
   });
-
-  const plant = Array.isArray(plantData) ? plantData[0] : plantData;
 
   const handleOk = () => {
     setLocation("/library");

@@ -69,6 +69,7 @@ export default function PlantLibrary() {
   };
 
   const handlePlantClick = (plantId: number) => {
+    console.log("Clicking plant with ID:", plantId);
     setLocation(`/plant/${plantId}`);
   };
 
@@ -181,7 +182,12 @@ export default function PlantLibrary() {
                 
                 {/* Plant item */}
                 <div
-                  onClick={() => !swipeState.currentX && handlePlantClick(plant.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (!swipeState.currentX) {
+                      handlePlantClick(plant.id);
+                    }
+                  }}
                   onTouchStart={(e) => handleTouchStart(e, plant.id)}
                   onTouchMove={(e) => handleTouchMove(e, plant.id)}
                   onTouchEnd={() => handleTouchEnd(plant.id, plant.commonName)}
