@@ -1,17 +1,13 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useLocation, useParams } from "wouter";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import type { Plant } from "@shared/schema";
 
 export default function PlantDetails() {
   const [, setLocation] = useLocation();
   const { id } = useParams();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   const {
     data: plantData,
@@ -24,31 +20,8 @@ export default function PlantDetails() {
 
   const plant = Array.isArray(plantData) ? plantData[0] : plantData;
 
-  const updateCountMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest("PATCH", `/api/plants/${id}/count`);
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/plants"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/plants", id] });
-      setLocation("/library");
-      toast({
-        title: "Success",
-        description: "Plant saved to your library",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to save plant",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleSave = () => {
-    updateCountMutation.mutate();
+  const handleOk = () => {
+    setLocation("/library");
   };
 
   if (isLoading) {
@@ -60,8 +33,6 @@ export default function PlantDetails() {
   }
 
   if (error || !plant) {
-    console.error("Plant details error:", error);
-    console.log("Plant ID:", id);
     return (
       <div className="bg-light-pastel-green min-h-screen min-h-[100dvh] flex items-center justify-center px-4">
         <div className="text-dark-green text-center">
@@ -77,9 +48,6 @@ export default function PlantDetails() {
     );
   }
 
-  console.log("Plant data in details:", plant);
-  console.log("Plant imageUrl:", plant.imageUrl ? plant.imageUrl.substring(0, 50) + "..." : "undefined");
-
   return (
     <div className="bg-light-pastel-green flex flex-col min-h-screen min-h-[100dvh]">
       {/* Header */}
@@ -94,15 +62,10 @@ export default function PlantDetails() {
         </Button>
         <h1 className="text-dark-green text-lg font-medium">Plant Details</h1>
         <Button
-          onClick={handleSave}
-          disabled={updateCountMutation.isPending}
+          onClick={handleOk}
           className="bg-forest-green text-white-pastel px-4 py-2 font-medium hover:bg-dark-green"
         >
-          {updateCountMutation.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            "Save"
-          )}
+          OK
         </Button>
       </div>
 
@@ -112,13 +75,6 @@ export default function PlantDetails() {
           src={plant.imageUrl}
           alt={plant.commonName}
           className="w-full h-64 object-cover rounded-xl shadow-lg"
-          onError={(e) => {
-            console.error("Failed to load plant image:", plant.imageUrl?.substring(0, 100) + "...");
-            console.error("Full imageUrl:", plant.imageUrl);
-          }}
-          onLoad={() => {
-            console.log("Plant image loaded successfully");
-          }}
         />
       </div>
 
