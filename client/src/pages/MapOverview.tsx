@@ -88,7 +88,7 @@ export default function MapOverview() {
             border-radius: 4px;
             cursor: pointer;
             font-size: 12px;
-          " onclick="window.location.href = '/plant/${plant.id}'">
+          " onclick="window.location.href = '/plant/${plant.id}?from=map'">
             View Details
           </button>
         </div>
@@ -96,7 +96,7 @@ export default function MapOverview() {
       
       // Make marker clickable to navigate to plant details
       marker.on('click', () => {
-        setLocation(`/plant/${plant.id}`);
+        setLocation(`/plant/${plant.id}?from=map`);
       });
       
       markers.push(marker);

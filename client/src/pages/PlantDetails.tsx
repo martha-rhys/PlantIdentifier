@@ -11,8 +11,9 @@ export default function PlantDetails() {
   const { id } = useParams();
   const searchParams = useSearch();
   
-  // Check if user came from camera (after taking photo) or from library
+  // Check if user came from camera (after taking photo), map, or library
   const fromCamera = searchParams.includes('from=camera');
+  const fromMap = searchParams.includes('from=map');
 
   const {
     data: plant,
@@ -23,8 +24,12 @@ export default function PlantDetails() {
     enabled: !!id,
   });
 
-  const handleOk = () => {
-    setLocation("/library");
+  const handleBack = () => {
+    if (fromMap) {
+      setLocation("/map");
+    } else {
+      setLocation("/library");
+    }
   };
 
   if (isLoading) {
@@ -55,11 +60,11 @@ export default function PlantDetails() {
     <div className="bg-light-pastel-green flex flex-col h-screen max-h-[100dvh]">
       {/* Header */}
       <div className="flex justify-between items-center p-4 pt-12">
-        {fromCamera ? (
+        {fromCamera || fromMap ? (
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setLocation("/camera")}
+            onClick={handleBack}
             className="text-dark-green hover:bg-white"
           >
             <ArrowLeft className="h-6 w-6" />
@@ -69,7 +74,7 @@ export default function PlantDetails() {
         )}
         <h1 className="text-dark-green text-lg font-medium">Plant Details</h1>
         <Button
-          onClick={handleOk}
+          onClick={handleBack}
           className="bg-forest-green text-white-pastel px-4 py-2 font-medium hover:bg-dark-green"
         >
           OK
