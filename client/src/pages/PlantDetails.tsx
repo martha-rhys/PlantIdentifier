@@ -3,6 +3,7 @@ import { useLocation, useParams, useSearch } from "wouter";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import LocationMap from "@/components/LocationMap";
 import type { Plant } from "@shared/schema";
 
 export default function PlantDetails() {
@@ -135,16 +136,23 @@ export default function PlantDetails() {
 
             {(plant.locationName || plant.latitude) && (
               <div>
-                <h3 className="text-dark-green font-semibold mb-1">
+                <h3 className="text-dark-green font-semibold mb-3">
                   Location
                 </h3>
-                {plant.locationName ? (
-                  <p className="text-gray-700">{plant.locationName}</p>
-                ) : (
-                  <p className="text-gray-700 text-sm">
-                    {plant.latitude}, {plant.longitude}
-                  </p>
-                )}
+                <LocationMap 
+                  latitude={plant.latitude!}
+                  longitude={plant.longitude!}
+                  locationName={plant.locationName}
+                />
+                <div className="mt-2">
+                  {plant.locationName ? (
+                    <p className="text-gray-700 text-sm">{plant.locationName}</p>
+                  ) : (
+                    <p className="text-gray-700 text-sm">
+                      {plant.latitude}, {plant.longitude}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
 
