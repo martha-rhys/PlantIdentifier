@@ -104,7 +104,7 @@ export default function MapOverview() {
 
     // Fit map to show all markers
     if (markers.length > 0) {
-      const group = new L.FeatureGroup(markers);
+      const group = L.featureGroup(markers);
       map.fitBounds(group.getBounds().pad(0.1));
       
       // Set minimum zoom level if all plants are very close together
