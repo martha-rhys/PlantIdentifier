@@ -43,7 +43,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Use OpenAI to identify the plant
       console.log("Identifying plant with OpenAI API...");
-      const identifiedPlant = await identifyPlantWithAI(imageData);
+      const identifiedPlant = await identifyPlantWithAI(imageData, aromaLevel);
       
       const plantData = {
         ...identifiedPlant,
