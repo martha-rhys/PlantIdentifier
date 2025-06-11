@@ -80,6 +80,9 @@ export class MemStorage implements IStorage {
       imageUrl: insertPlant.imageUrl,
       aromaLevel: insertPlant.aromaLevel ?? 5,
       identificationCount: insertPlant.identificationCount ?? 1,
+      latitude: insertPlant.latitude || null,
+      longitude: insertPlant.longitude || null,
+      locationName: insertPlant.locationName || null,
       createdAt: new Date()
     };
     this.plants.set(id, plant);

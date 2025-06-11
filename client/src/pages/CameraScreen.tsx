@@ -4,6 +4,7 @@ import { X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useCamera } from "@/hooks/useCamera";
+import { useGeolocation } from "@/hooks/useGeolocation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -17,13 +18,17 @@ export default function CameraScreen() {
   const queryClient = useQueryClient();
 
   const { isPermissionGranted, error: cameraError } = useCamera(videoRef);
+  const { getCurrentLocation } = useGeolocation();
 
   const identifyPlantMutation = useMutation({
-    mutationFn: async (imageData: string) => {
-      console.log("Attempting to identify plant with image data length:", imageData.length);
+    mutationFn: async (data: { imageData: string; locationData: any }) => {
+      console.log("Attempting to identify plant with image data length:", data.imageData.length);
       const response = await apiRequest("POST", "/api/plants/identify", {
-        imageData,
+        imageData: data.imageData,
         aromaLevel: aromaLevel[0],
+        latitude: data.locationData.latitude,
+        longitude: data.locationData.longitude,
+        locationName: data.locationData.locationName,
       });
       return response.json();
     },
@@ -42,7 +47,7 @@ export default function CameraScreen() {
     },
   });
 
-  const capturePhoto = () => {
+  const capturePhoto = async () => {
     if (!videoRef.current || !canvasRef.current) return;
 
     const video = videoRef.current;
@@ -69,7 +74,11 @@ export default function CameraScreen() {
 
     // Use higher quality compression for better detail
     const imageData = canvas.toDataURL("image/jpeg", 0.8);
-    identifyPlantMutation.mutate(imageData);
+    
+    // Get current location
+    const locationData = await getCurrentLocation();
+    
+    identifyPlantMutation.mutate({ imageData, locationData });
   };
 
   return (

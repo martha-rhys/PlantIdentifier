@@ -15,6 +15,9 @@ export const plants = pgTable("plants", {
   imageUrl: text("image_url").notNull(),
   aromaLevel: integer("aroma_level").notNull().default(5), // 0-10 scale
   identificationCount: integer("identification_count").notNull().default(1),
+  latitude: text("latitude"), // GPS latitude
+  longitude: text("longitude"), // GPS longitude
+  locationName: text("location_name"), // Human-readable location name
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
