@@ -7,6 +7,7 @@ import LoadingScreen from "@/pages/LoadingScreen";
 import PlantLibrary from "@/pages/PlantLibrary";
 import CameraScreen from "@/pages/CameraScreen";
 import PlantDetails from "@/pages/PlantDetails";
+import MapOverview from "@/pages/MapOverview";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/library" component={PlantLibrary} />
       <Route path="/camera" component={CameraScreen} />
       <Route path="/plant/:id" component={PlantDetails} />
+      <Route path="/map" component={MapOverview} />
       <Route component={NotFound} />
     </Switch>
   );

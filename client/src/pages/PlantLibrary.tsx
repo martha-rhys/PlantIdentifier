@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import { Trash2, Camera, Loader2 } from "lucide-react";
+import { Map, Camera, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -138,15 +138,11 @@ export default function PlantLibrary() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={handleDeleteAll}
-          disabled={deleteAllMutation.isPending || plants.length === 0}
+          onClick={() => setLocation("/map")}
+          disabled={plants.length === 0}
           className="text-white-pastel hover:bg-dark-green"
         >
-          {deleteAllMutation.isPending ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : (
-            <Trash2 className="h-5 w-5" />
-          )}
+          <Map className="h-5 w-5" />
         </Button>
       </div>
 
