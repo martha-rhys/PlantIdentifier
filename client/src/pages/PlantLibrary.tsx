@@ -219,7 +219,10 @@ export default function PlantLibrary() {
       {/* Bottom Button */}
       <div className="p-4 flex-shrink-0 bg-gradient-to-t from-forest-green to-transparent">
         <Button
-          onClick={() => setLocation("/camera")}
+          onClick={() => {
+            console.log("Identify New Plant button clicked");
+            setLocation("/camera");
+          }}
           className="w-full py-4 text-lg font-semibold shadow-lg"
           style={{
             backgroundColor: 'var(--white-pastel)',
