@@ -14,15 +14,13 @@ export default function LoadingScreen() {
 
   return (
     <div className="bg-forest-green flex flex-col items-center justify-center px-6 min-h-screen min-h-[100dvh]">
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Lisc_lipy.jpg"
           alt="Split-leaf Philodendron"
-          className="w-64 h-64 object-cover rounded-full shadow-2xl border-4 border-white"
+          className="w-64 h-64 object-cover rounded-full shadow-2xl border-4 border-white mb-8"
           style={{ borderColor: 'var(--white-pastel)' }}
         />
-      </div>
-      <div className="pb-12">
         <h1 className="text-white-pastel text-2xl font-light text-center tracking-wide">
           welcome
         </h1>
