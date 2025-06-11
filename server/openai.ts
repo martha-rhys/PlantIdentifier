@@ -40,7 +40,7 @@ Response format:
           content: [
             {
               type: "text",
-              text: `Please identify this tree, shrub or plant and provide details about it.${aromaLevel !== undefined ? ` The user rated the plant's aroma intensity as ${aromaLevel}/10 (where 0 is no smell and 10 is very strong). Consider this aroma information in your identification and include relevant scent-related details in the specialFeatures if applicable.` : ""}`
+              text: `Please identify this tree, shrub or plant and provide details about it.${aromaLevel !== undefined ? ` The user rated the leaf's aroma intensity as ${aromaLevel}/10 (where 0 is no smell and 10 is very strong). Consider this aroma information in your identification and include relevant scent-related details in the specialFeatures if applicable.` : ""}`
             },
             {
               type: "image_url",
