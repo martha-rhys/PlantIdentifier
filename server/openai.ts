@@ -21,7 +21,7 @@ export async function identifyPlantWithAI(imageData: string): Promise<PlantIdent
       messages: [
         {
           role: "system",
-          content: `You are a professional botanist, tree and plant identification expert. Analyze the leaf in the image and provide detailed information in JSON format. If you cannot identify the plant with reasonable confidence, still provide your best guess but lower the confidence score accordingly.
+          content: `You are a professional botanist, tree and plant identification expert. Analyze the leaf in the image and provide detailed information in JSON format of what plant, shrub or tree it belongs to. The image was taken in the UK. If you cannot identify it with reasonable confidence, still provide your best guess but lower the confidence score accordingly.
 
 Response format:
 {
@@ -40,7 +40,7 @@ Response format:
           content: [
             {
               type: "text",
-              text: "Please identify this tree or plant and provide details about it."
+              text: "Please identify this tree, shrub or plant and provide details about it."
             },
             {
               type: "image_url",
