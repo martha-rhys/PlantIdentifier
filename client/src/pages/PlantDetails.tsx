@@ -133,6 +133,21 @@ export default function PlantDetails() {
               <p className="text-gray-700">{plant.aromaLevel}/10</p>
             </div>
 
+            {(plant.locationName || plant.latitude) && (
+              <div>
+                <h3 className="text-dark-green font-semibold mb-1">
+                  Location
+                </h3>
+                {plant.locationName ? (
+                  <p className="text-gray-700">{plant.locationName}</p>
+                ) : (
+                  <p className="text-gray-700 text-sm">
+                    {plant.latitude}, {plant.longitude}
+                  </p>
+                )}
+              </div>
+            )}
+
             <div>
               <h3 className="text-dark-green font-semibold mb-1">
                 Confidence Level

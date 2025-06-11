@@ -35,7 +35,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Identify plant (mock AI endpoint)
   app.post("/api/plants/identify", async (req, res) => {
     try {
-      const { imageData, aromaLevel } = req.body;
+      const { imageData, aromaLevel, latitude, longitude, locationName } = req.body;
       
       if (!imageData) {
         return res.status(400).json({ message: "Image data required" });
@@ -50,6 +50,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         imageUrl: imageData,
         aromaLevel: aromaLevel !== undefined ? aromaLevel : 5,
         identificationCount: 1,
+        latitude: latitude || null,
+        longitude: longitude || null,
+        locationName: locationName || null,
       };
 
       const plant = await storage.createPlant(plantData);
