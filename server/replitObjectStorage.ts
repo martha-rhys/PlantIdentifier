@@ -105,10 +105,28 @@ export class ReplitObjectStorage implements IStorage {
   async getAllPlants(): Promise<Plant[]> {
     try {
       const exists = await this.client.exists('plants/index.json');
+      console.log('Plants index exists:', exists);
+      
       if (exists) {
         const data = await this.client.downloadAsBytes('plants/index.json');
-        const text = Buffer.isBuffer(data) ? data.toString('utf8') : String(data);
+        console.log('Downloaded data type:', typeof data);
+        console.log('Is Buffer?', Buffer.isBuffer(data));
+        console.log('Data:', data);
+        
+        let text: string;
+        if (Buffer.isBuffer(data)) {
+          text = data.toString('utf8');
+        } else if (typeof data === 'string') {
+          text = data;
+        } else {
+          console.log('Converting object to string:', data);
+          text = JSON.stringify(data);
+        }
+        
+        console.log('Text to parse:', text);
         const plantIds = JSON.parse(text);
+        console.log('Parsed plant IDs:', plantIds);
+        
         const plants: Plant[] = [];
         
         for (const id of plantIds) {
