@@ -37,9 +37,25 @@ export class ReplitObjectStorage implements IStorage {
   private async getNextPlantId(): Promise<number> {
     try {
       const exists = await this.client.exists('metadata/nextPlantId.json');
-      if (exists) {
-        const data = await this.client.downloadAsBytes('metadata/nextPlantId.json');
-        const text = Buffer.isBuffer(data) ? data.toString('utf8') : String(data);
+      if (exists && (exists as any).ok) {
+        const response = await this.client.downloadAsBytes('metadata/nextPlantId.json');
+        
+        // Handle Replit Object Storage response format
+        let buffer: Buffer;
+        if (response && typeof response === 'object' && 'value' in response) {
+          const bufferArray = (response as any).value;
+          if (Array.isArray(bufferArray) && bufferArray.length > 0) {
+            buffer = bufferArray[0];
+          } else {
+            return this.currentPlantId;
+          }
+        } else if (Buffer.isBuffer(response)) {
+          buffer = response;
+        } else {
+          return this.currentPlantId;
+        }
+        
+        const text = buffer.toString('utf8');
         const metadata = JSON.parse(text);
         return metadata.id || 1;
       }
@@ -62,9 +78,25 @@ export class ReplitObjectStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
     try {
       const exists = await this.client.exists(`users/${id}.json`);
-      if (exists) {
-        const data = await this.client.downloadAsBytes(`users/${id}.json`);
-        const text = Buffer.isBuffer(data) ? data.toString('utf8') : String(data);
+      if (exists && (exists as any).ok) {
+        const response = await this.client.downloadAsBytes(`users/${id}.json`);
+        
+        // Handle Replit Object Storage response format
+        let buffer: Buffer;
+        if (response && typeof response === 'object' && 'value' in response) {
+          const bufferArray = (response as any).value;
+          if (Array.isArray(bufferArray) && bufferArray.length > 0) {
+            buffer = bufferArray[0];
+          } else {
+            return undefined;
+          }
+        } else if (Buffer.isBuffer(response)) {
+          buffer = response;
+        } else {
+          return undefined;
+        }
+        
+        const text = buffer.toString('utf8');
         return JSON.parse(text);
       }
     } catch (error) {
@@ -76,9 +108,25 @@ export class ReplitObjectStorage implements IStorage {
   async getUserByUsername(username: string): Promise<User | undefined> {
     try {
       const exists = await this.client.exists(`users/by-username/${encodeURIComponent(username)}.json`);
-      if (exists) {
-        const data = await this.client.downloadAsBytes(`users/by-username/${encodeURIComponent(username)}.json`);
-        const text = Buffer.isBuffer(data) ? data.toString('utf8') : String(data);
+      if (exists && (exists as any).ok) {
+        const response = await this.client.downloadAsBytes(`users/by-username/${encodeURIComponent(username)}.json`);
+        
+        // Handle Replit Object Storage response format
+        let buffer: Buffer;
+        if (response && typeof response === 'object' && 'value' in response) {
+          const bufferArray = (response as any).value;
+          if (Array.isArray(bufferArray) && bufferArray.length > 0) {
+            buffer = bufferArray[0];
+          } else {
+            return undefined;
+          }
+        } else if (Buffer.isBuffer(response)) {
+          buffer = response;
+        } else {
+          return undefined;
+        }
+        
+        const text = buffer.toString('utf8');
         return JSON.parse(text);
       }
     } catch (error) {
@@ -105,28 +153,27 @@ export class ReplitObjectStorage implements IStorage {
   async getAllPlants(): Promise<Plant[]> {
     try {
       const exists = await this.client.exists('plants/index.json');
-      console.log('Plants index exists:', exists);
       
-      if (exists) {
-        const data = await this.client.downloadAsBytes('plants/index.json');
-        console.log('Downloaded data type:', typeof data);
-        console.log('Is Buffer?', Buffer.isBuffer(data));
-        console.log('Data:', data);
+      if (exists && (exists as any).ok) {
+        const response = await this.client.downloadAsBytes('plants/index.json');
         
-        let text: string;
-        if (Buffer.isBuffer(data)) {
-          text = data.toString('utf8');
-        } else if (typeof data === 'string') {
-          text = data;
+        // Handle Replit Object Storage response format
+        let buffer: Buffer;
+        if (response && typeof response === 'object' && 'value' in response) {
+          const bufferArray = (response as any).value;
+          if (Array.isArray(bufferArray) && bufferArray.length > 0) {
+            buffer = bufferArray[0];
+          } else {
+            return [];
+          }
+        } else if (Buffer.isBuffer(response)) {
+          buffer = response;
         } else {
-          console.log('Converting object to string:', data);
-          text = JSON.stringify(data);
+          return [];
         }
         
-        console.log('Text to parse:', text);
+        const text = buffer.toString('utf8');
         const plantIds = JSON.parse(text);
-        console.log('Parsed plant IDs:', plantIds);
-        
         const plants: Plant[] = [];
         
         for (const id of plantIds) {
@@ -147,9 +194,25 @@ export class ReplitObjectStorage implements IStorage {
   async getPlant(id: number): Promise<Plant | undefined> {
     try {
       const exists = await this.client.exists(`plants/${id}.json`);
-      if (exists) {
-        const data = await this.client.downloadAsBytes(`plants/${id}.json`);
-        const text = Buffer.isBuffer(data) ? data.toString('utf8') : String(data);
+      if (exists && (exists as any).ok) {
+        const response = await this.client.downloadAsBytes(`plants/${id}.json`);
+        
+        // Handle Replit Object Storage response format
+        let buffer: Buffer;
+        if (response && typeof response === 'object' && 'value' in response) {
+          const bufferArray = (response as any).value;
+          if (Array.isArray(bufferArray) && bufferArray.length > 0) {
+            buffer = bufferArray[0];
+          } else {
+            return undefined;
+          }
+        } else if (Buffer.isBuffer(response)) {
+          buffer = response;
+        } else {
+          return undefined;
+        }
+        
+        const text = buffer.toString('utf8');
         return JSON.parse(text);
       }
     } catch (error) {
