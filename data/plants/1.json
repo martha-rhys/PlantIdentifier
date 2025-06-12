@@ -1,0 +1,18 @@
+{
+  "id": 1,
+  "scientificName": "Unknown",
+  "commonName": "Unknown",
+  "family": "Unknown",
+  "origin": "Unknown",
+  "lightRequirements": "Unknown",
+  "watering": "Unknown",
+  "specialFeatures": "Unknown",
+  "confidence": 50,
+  "imageUrl": "/data/images/plant-1.jpg",
+  "aromaLevel": 5,
+  "identificationCount": 1,
+  "latitude": "53.205369926062616",
+  "longitude": "-4.182538375146798",
+  "locationName": "Gwynedd, Wales, United Kingdom",
+  "createdAt": "2025-06-12T09:05:03.891Z"
+}

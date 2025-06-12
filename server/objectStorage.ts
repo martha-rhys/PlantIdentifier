@@ -3,18 +3,23 @@ import { IStorage } from "./storage";
 
 export class ReplitObjectStorage implements IStorage {
   private bucketId = "replit-objstore-41dfb480-8c50-47c9-84e6-470af0db997c";
-  private baseUrl = `https://objstore.replit.com/${this.bucketId}`;
+  private baseUrl = `https://storage.replit.com/${this.bucketId}`;
   private currentUserId: number = 1;
   private currentPlantId: number = 1;
 
   private async makeRequest(path: string, options: RequestInit = {}): Promise<Response> {
-    const response = await fetch(`${this.baseUrl}${path}`, {
+    const url = `${this.baseUrl}${path}`;
+    console.log(`Making request to: ${url}`);
+    
+    const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
       },
       ...options,
     });
+    
+    console.log(`Response status: ${response.status}`);
     
     if (!response.ok && response.status !== 404) {
       throw new Error(`Object storage request failed: ${response.statusText}`);
@@ -29,8 +34,11 @@ export class ReplitObjectStorage implements IStorage {
     const buffer = Buffer.from(base64Data, 'base64');
     
     const imagePath = `/images/plant-${plantId}.jpg`;
+    const url = `${this.baseUrl}${imagePath}`;
     
-    const response = await fetch(`${this.baseUrl}${imagePath}`, {
+    console.log(`Uploading image to: ${url}`);
+    
+    const response = await fetch(url, {
       method: 'PUT',
       headers: {
         'Content-Type': 'image/jpeg',
@@ -38,11 +46,13 @@ export class ReplitObjectStorage implements IStorage {
       body: buffer,
     });
     
+    console.log(`Image upload status: ${response.status}`);
+    
     if (!response.ok) {
       throw new Error(`Failed to upload image: ${response.statusText}`);
     }
     
-    return `${this.baseUrl}${imagePath}`;
+    return url;
   }
 
   private async getNextPlantId(): Promise<number> {
