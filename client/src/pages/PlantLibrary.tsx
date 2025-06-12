@@ -1,11 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import { Map, Camera, Loader2, Trash2 } from "lucide-react";
+import { Map, Camera, Loader2, Trash2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { Plant } from "@shared/schema";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function PlantLibrary() {
   const [, setLocation] = useLocation();
@@ -79,6 +79,15 @@ export default function PlantLibrary() {
     }
   };
 
+  // Pull-to-refresh state
+  const [pullToRefresh, setPullToRefresh] = useState({
+    isPulling: false,
+    startY: 0,
+    currentY: 0,
+    isRefreshing: false
+  });
+  const containerRef = useRef<HTMLDivElement>(null);
+
   // Swipe handling
   const [swipeStates, setSwipeStates] = useState<Record<number, { startX: number; currentX: number; isDeleting: boolean }>>({});
 
@@ -119,6 +128,74 @@ export default function PlantLibrary() {
     });
   };
 
+  // Pull-to-refresh handlers
+  const handleContainerTouchStart = (e: React.TouchEvent) => {
+    const container = containerRef.current;
+    if (!container || container.scrollTop > 0) return;
+
+    const touch = e.touches[0];
+    setPullToRefresh(prev => ({
+      ...prev,
+      isPulling: true,
+      startY: touch.clientY,
+      currentY: 0
+    }));
+  };
+
+  const handleContainerTouchMove = (e: React.TouchEvent) => {
+    if (!pullToRefresh.isPulling) return;
+
+    const container = containerRef.current;
+    if (!container || container.scrollTop > 0) {
+      setPullToRefresh(prev => ({ ...prev, isPulling: false }));
+      return;
+    }
+
+    const touch = e.touches[0];
+    const currentY = touch.clientY - pullToRefresh.startY;
+    
+    if (currentY > 0) {
+      e.preventDefault();
+      setPullToRefresh(prev => ({
+        ...prev,
+        currentY: Math.min(currentY, 120) // Cap at 120px
+      }));
+    }
+  };
+
+  const handleContainerTouchEnd = async () => {
+    if (!pullToRefresh.isPulling) return;
+
+    const shouldRefresh = pullToRefresh.currentY > 80; // Threshold for refresh
+
+    if (shouldRefresh && !pullToRefresh.isRefreshing) {
+      setPullToRefresh(prev => ({ ...prev, isRefreshing: true }));
+      
+      try {
+        await queryClient.invalidateQueries({ queryKey: ["/api/plants"] });
+        await queryClient.refetchQueries({ queryKey: ["/api/plants"] });
+        
+        toast({
+          title: "Refreshed",
+          description: "Plant library updated",
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to refresh plant library",
+          variant: "destructive",
+        });
+      }
+    }
+
+    setPullToRefresh({
+      isPulling: false,
+      startY: 0,
+      currentY: 0,
+      isRefreshing: false
+    });
+  };
+
   if (error) {
     return (
       <div className="bg-forest-green min-h-screen min-h-[100dvh] flex items-center justify-center px-4">
@@ -146,8 +223,38 @@ export default function PlantLibrary() {
         </Button>
       </div>
 
+      {/* Pull-to-refresh indicator */}
+      {pullToRefresh.isPulling && (
+        <div 
+          className="absolute top-16 left-0 right-0 flex justify-center z-10 transition-transform duration-300"
+          style={{
+            transform: `translateY(${Math.min(pullToRefresh.currentY - 40, 40)}px)`,
+            opacity: Math.min(pullToRefresh.currentY / 80, 1)
+          }}
+        >
+          <div className="bg-dark-green rounded-full p-3 shadow-lg">
+            <RefreshCw 
+              className={`h-5 w-5 text-white-pastel ${pullToRefresh.isRefreshing ? 'animate-spin' : ''}`}
+              style={{
+                transform: `rotate(${pullToRefresh.currentY * 2}deg)`
+              }}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Plant List Container */}
-      <div className="flex-1 overflow-y-auto px-4 space-y-3 pb-4">
+      <div 
+        ref={containerRef}
+        className="flex-1 overflow-y-auto px-4 space-y-3 pb-4"
+        onTouchStart={handleContainerTouchStart}
+        onTouchMove={handleContainerTouchMove}
+        onTouchEnd={handleContainerTouchEnd}
+        style={{
+          transform: pullToRefresh.isPulling ? `translateY(${Math.min(pullToRefresh.currentY * 0.5, 60)}px)` : 'none',
+          transition: pullToRefresh.isPulling ? 'none' : 'transform 0.3s ease-out'
+        }}
+      >
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-white-pastel" />
