@@ -39,7 +39,8 @@ export class ReplitObjectStorage implements IStorage {
       const exists = await this.client.exists('metadata/nextPlantId.json');
       if (exists) {
         const data = await this.client.downloadAsBytes('metadata/nextPlantId.json');
-        const metadata = JSON.parse(data.toString());
+        const text = Buffer.isBuffer(data) ? data.toString('utf8') : String(data);
+        const metadata = JSON.parse(text);
         return metadata.id || 1;
       }
     } catch (error) {
@@ -63,7 +64,8 @@ export class ReplitObjectStorage implements IStorage {
       const exists = await this.client.exists(`users/${id}.json`);
       if (exists) {
         const data = await this.client.downloadAsBytes(`users/${id}.json`);
-        return JSON.parse(data.toString());
+        const text = Buffer.isBuffer(data) ? data.toString('utf8') : String(data);
+        return JSON.parse(text);
       }
     } catch (error) {
       console.warn('Could not get user:', error);
@@ -76,7 +78,8 @@ export class ReplitObjectStorage implements IStorage {
       const exists = await this.client.exists(`users/by-username/${encodeURIComponent(username)}.json`);
       if (exists) {
         const data = await this.client.downloadAsBytes(`users/by-username/${encodeURIComponent(username)}.json`);
-        return JSON.parse(data.toString());
+        const text = Buffer.isBuffer(data) ? data.toString('utf8') : String(data);
+        return JSON.parse(text);
       }
     } catch (error) {
       console.warn('Could not get user by username:', error);
@@ -104,7 +107,8 @@ export class ReplitObjectStorage implements IStorage {
       const exists = await this.client.exists('plants/index.json');
       if (exists) {
         const data = await this.client.downloadAsBytes('plants/index.json');
-        const plantIds = JSON.parse(data.toString());
+        const text = Buffer.isBuffer(data) ? data.toString('utf8') : String(data);
+        const plantIds = JSON.parse(text);
         const plants: Plant[] = [];
         
         for (const id of plantIds) {
@@ -127,7 +131,8 @@ export class ReplitObjectStorage implements IStorage {
       const exists = await this.client.exists(`plants/${id}.json`);
       if (exists) {
         const data = await this.client.downloadAsBytes(`plants/${id}.json`);
-        return JSON.parse(data.toString());
+        const text = Buffer.isBuffer(data) ? data.toString('utf8') : String(data);
+        return JSON.parse(text);
       }
     } catch (error) {
       console.warn('Could not get plant:', error);
