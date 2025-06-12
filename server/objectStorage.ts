@@ -1,58 +1,36 @@
 import { plants, type Plant, type InsertPlant, users, type User, type InsertUser } from "@shared/schema";
 import { IStorage } from "./storage";
+import { Client } from "@replit/object-storage";
 
 export class ReplitObjectStorage implements IStorage {
-  private bucketId = "replit-objstore-41dfb480-8c50-47c9-84e6-470af0db997c";
-  private baseUrl = `https://storage.replit.com/${this.bucketId}`;
+  private client: Client;
   private currentUserId: number = 1;
   private currentPlantId: number = 1;
 
-  private async makeRequest(path: string, options: RequestInit = {}): Promise<Response> {
-    const url = `${this.baseUrl}${path}`;
-    console.log(`Making request to: ${url}`);
-    
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
-    });
-    
-    console.log(`Response status: ${response.status}`);
-    
-    if (!response.ok && response.status !== 404) {
-      throw new Error(`Object storage request failed: ${response.statusText}`);
-    }
-    
-    return response;
+  constructor() {
+    this.client = new Client();
   }
 
   private async uploadImage(imageData: string, plantId: number): Promise<string> {
-    // Extract base64 data from data URL
-    const base64Data = imageData.split(',')[1];
-    const buffer = Buffer.from(base64Data, 'base64');
-    
-    const imagePath = `/images/plant-${plantId}.jpg`;
-    const url = `${this.baseUrl}${imagePath}`;
-    
-    console.log(`Uploading image to: ${url}`);
-    
-    const response = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'image/jpeg',
-      },
-      body: buffer,
-    });
-    
-    console.log(`Image upload status: ${response.status}`);
-    
-    if (!response.ok) {
-      throw new Error(`Failed to upload image: ${response.statusText}`);
+    try {
+      // Extract base64 data from data URL
+      const base64Data = imageData.split(',')[1];
+      const buffer = Buffer.from(base64Data, 'base64');
+      
+      const imagePath = `images/plant-${plantId}.jpg`;
+      
+      console.log(`Uploading image to path: ${imagePath}`);
+      
+      await this.client.uploadFromBytes(imagePath, buffer);
+      
+      console.log(`Image uploaded successfully to: ${imagePath}`);
+      
+      // Return path for retrieval (Replit Object Storage will handle the URL generation)
+      return imagePath;
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+      throw error;
     }
-    
-    return url;
   }
 
   private async getNextPlantId(): Promise<number> {
