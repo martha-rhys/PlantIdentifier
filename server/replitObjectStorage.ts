@@ -25,8 +25,8 @@ export class ReplitObjectStorage implements IStorage {
       
       console.log(`Image uploaded successfully to: ${imagePath}`);
       
-      // Return path for retrieval
-      return imagePath;
+      // Return API endpoint URL instead of object storage path
+      return `/api/images/plant-${plantId}.jpg`;
     } catch (error) {
       console.error('Failed to upload image:', error);
       // Return original data URL as fallback
@@ -213,7 +213,15 @@ export class ReplitObjectStorage implements IStorage {
         }
         
         const text = buffer.toString('utf8');
-        return JSON.parse(text);
+        const plant = JSON.parse(text);
+        
+        // Convert old image URLs to new API format
+        if (plant.imageUrl && plant.imageUrl.startsWith('images/')) {
+          const filename = plant.imageUrl.split('/').pop();
+          plant.imageUrl = `/api/images/${filename}`;
+        }
+        
+        return plant;
       }
     } catch (error) {
       console.warn('Could not get plant:', error);

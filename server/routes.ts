@@ -65,6 +65,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Serve images from object storage
+  app.get("/api/images/:filename", async (req, res) => {
+    try {
+      const filename = req.params.filename;
+      const imagePath = `images/${filename}`;
+      
+      // Check if image exists in object storage
+      const exists = await (storage as any).client?.exists(imagePath);
+      if (!exists || !(exists as any).ok) {
+        return res.status(404).json({ message: "Image not found" });
+      }
+
+      // Download image from object storage
+      const response = await (storage as any).client.downloadAsBytes(imagePath);
+      
+      // Handle Replit Object Storage response format
+      let buffer: Buffer;
+      if (response && typeof response === 'object' && 'value' in response) {
+        const bufferArray = (response as any).value;
+        if (Array.isArray(bufferArray) && bufferArray.length > 0) {
+          buffer = bufferArray[0];
+        } else {
+          return res.status(404).json({ message: "Image data not found" });
+        }
+      } else if (Buffer.isBuffer(response)) {
+        buffer = response;
+      } else {
+        return res.status(404).json({ message: "Invalid image data" });
+      }
+
+      // Set appropriate content type
+      const ext = filename.split('.').pop()?.toLowerCase();
+      let contentType = 'image/jpeg';
+      if (ext === 'png') contentType = 'image/png';
+      else if (ext === 'gif') contentType = 'image/gif';
+      else if (ext === 'webp') contentType = 'image/webp';
+
+      res.set('Content-Type', contentType);
+      res.set('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+      res.send(buffer);
+    } catch (error) {
+      console.error('Error serving image:', error);
+      res.status(500).json({ message: "Failed to serve image" });
+    }
+  });
+
   // Update plant identification count
   app.patch("/api/plants/:id/count", async (req, res) => {
     try {
