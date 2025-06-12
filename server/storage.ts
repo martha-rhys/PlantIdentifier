@@ -108,6 +108,6 @@ export class MemStorage implements IStorage {
   }
 }
 
-import { ReplitObjectStorage } from "./objectStorage";
+import { FileStorage } from "./fileStorage";
 
-export const storage = new ReplitObjectStorage();
+export const storage = new FileStorage();
